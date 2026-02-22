@@ -1,35 +1,40 @@
-// Check if geolocation is available
+// GPS Location
 if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(success, error);
-} else {
-  document.getElementById('info').textContent = "Geolocation is not supported by your browser.";
-}
 
-function success(position) {
+ navigator.geolocation.getCurrentPosition(function(position){
+
   const lat = position.coords.latitude;
   const lon = position.coords.longitude;
-  const accuracy = position.coords.accuracy;
 
-  document.getElementById('info').innerHTML = `
-    Latitude: ${lat} <br>
-    Longitude: ${lon} <br>
-    Accuracy: ±${accuracy} meters
-  `;
+  document.getElementById("info").innerHTML =
+  "Latitude: " + lat +
+  "<br>Longitude: " + lon;
 
-  // Initialize map
+  // Map
   const map = L.map('map').setView([lat, lon], 13);
 
-  // Add OpenStreetMap tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19
+   maxZoom: 19
   }).addTo(map);
 
-  // Add a marker
   L.marker([lat, lon]).addTo(map)
-    .bindPopup('You are here!')
-    .openPopup();
+   .bindPopup("You are here")
+   .openPopup();
+
+ });
+
 }
 
-function error(err) {
-  document.getElementById('info').textContent = `Error: ${err.message}`;
-}
+// IP Info
+fetch('https://ipapi.co/json/')
+.then(response => response.json())
+.then(data => {
+
+ document.getElementById('info').innerHTML +=
+ "<br><br>City: " + data.city +
+ "<br>Region: " + data.region +
+ "<br>Country: " + data.country_name +
+ "<br>IP: " + data.ip +
+ "<br>Timezone: " + data.timezone;
+
+});
