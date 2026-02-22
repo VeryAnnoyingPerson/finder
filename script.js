@@ -1,40 +1,31 @@
-// GPS Location
-if (navigator.geolocation) {
+function shareLocation(){
 
  navigator.geolocation.getCurrentPosition(function(position){
 
-  const lat = position.coords.latitude;
-  const lon = position.coords.longitude;
+  const data = {
 
-  document.getElementById("info").innerHTML =
-  "Latitude: " + lat +
-  "<br>Longitude: " + lon;
+   latitude: position.coords.latitude,
+   longitude: position.coords.longitude,
 
-  // Map
-  const map = L.map('map').setView([lat, lon], 13);
+   time: new Date()
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-   maxZoom: 19
-  }).addTo(map);
+  };
 
-  L.marker([lat, lon]).addTo(map)
-   .bindPopup("You are here")
-   .openPopup();
+  fetch("https://YOURSERVER.onrender.com/location",{
+
+   method:"POST",
+
+   headers:{
+    "Content-Type":"application/json"
+   },
+
+   body:JSON.stringify(data)
+
+  });
+
+  document.getElementById("status").innerHTML =
+  "Location Shared Successfully";
 
  });
 
 }
-
-// IP Info
-fetch('https://ipapi.co/json/')
-.then(response => response.json())
-.then(data => {
-
- document.getElementById('info').innerHTML +=
- "<br><br>City: " + data.city +
- "<br>Region: " + data.region +
- "<br>Country: " + data.country_name +
- "<br>IP: " + data.ip +
- "<br>Timezone: " + data.timezone;
-
-});
